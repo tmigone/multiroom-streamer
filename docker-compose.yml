@@ -1,0 +1,39 @@
+version: '2'
+
+volumes:
+  snapcast:
+
+services:
+
+  audio:
+    build: ./audio
+    privileged: true
+    labels:
+      io.balena.features.dbus: 1
+    ports:
+      - 4317:4317
+    volumes:
+      - snapcast:/var/cache/snapcast      
+
+  multiroom-server:
+    build: 
+      context: ./multiroom/server
+      args:
+        SNAPCAST_VERSION: 0.19.0
+    restart: on-failure
+    ports:
+      - 1704:1704
+      - 1705:1705
+    volumes:
+      - snapcast:/var/cache/snapcast
+
+  multiroom-client:
+    build: 
+      context: ./multiroom/client
+      args:
+        SNAPCAST_VERSION: 0.19.0
+    restart: on-failure 
+    network_mode: host 
+    privileged: true
+    volumes:
+      - snapcast:/var/cache/snapcast

@@ -1,0 +1,6 @@
+# Route all audio to snapcast
+load-module module-pipe-sink file=/var/cache/snapcast/snapfifo sink_name=snapcast format=s16le rate=44100
+set-default-sink snapcast
+
+# Route soundcard input to output, use default sink/source
+load-module module-loopback
